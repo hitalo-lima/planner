@@ -1,4 +1,4 @@
-package com.planner.demo;
+package com.planner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
