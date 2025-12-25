@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.planner.participant.ParticipantService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -58,6 +59,26 @@ public class TripController {
 			rawTrip.setDestination(payload.destination());
 
 			this.tripRepository.save(rawTrip);
+
+			return ResponseEntity.ok(rawTrip);
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	@PatchMapping("/{id}/confirm")
+	public ResponseEntity<Trip> confirmTrip(@PathVariable UUID id) {
+		Optional<Trip> trip = this.tripRepository.findById(id);
+
+		if (trip.isPresent()) {
+			Trip rawTrip = trip.get();
+
+			if (!rawTrip.isConfirmed()) {
+				rawTrip.setConfirmed(true);
+
+				this.tripRepository.save(rawTrip);
+				this.participantService.triggerConfirmationEmailToParticipants(id);
+			}
 
 			return ResponseEntity.ok(rawTrip);
 		}
