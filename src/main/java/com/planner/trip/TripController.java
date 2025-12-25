@@ -2,6 +2,7 @@ package com.planner.trip;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.planner.participant.ParticipantCreateResponse;
+import com.planner.participant.ParticipantData;
+import com.planner.participant.ParticipantRequestPayload;
 import com.planner.participant.ParticipantService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +31,8 @@ public class TripController {
 		this.tripRepository = tripRepository;
 	}
 
-	private ParticipantService participantService;
-	private TripRepository tripRepository;
+	private final ParticipantService participantService;
+	private final TripRepository tripRepository;
 
 	@PostMapping
 	public ResponseEntity<TripCreateResponse> createTrip(@RequestBody TripRequestPayload payload) {
@@ -36,7 +40,7 @@ public class TripController {
 
 		this.tripRepository.save(newTrip);
 
-		this.participantService.registerParticipantToTrip(payload.emailsToInvite(), newTrip.getId());
+		this.participantService.registerParticipantsToTrip(payload.emailsToInvite(), newTrip);
 
 		return ResponseEntity.ok(new TripCreateResponse(newTrip.getId()));
 	}
@@ -84,6 +88,39 @@ public class TripController {
 		}
 
 		return ResponseEntity.notFound().build();
+	}
+
+	@PostMapping("/{id}/invite")
+	public ResponseEntity<ParticipantCreateResponse> inviteParticipant(@PathVariable UUID id,
+			@RequestBody ParticipantRequestPayload payload) {
+		Optional<Trip> trip = this.tripRepository.findById(id);
+
+		if (trip.isPresent()) {
+			Trip rawTrip = trip.get();
+
+			ParticipantCreateResponse participantResponse = this.participantService
+					.registerParticipantToTrip(payload.email(), rawTrip);
+
+			if (rawTrip.isConfirmed())
+				this.participantService.triggerConfirmationEmailToParticipant(payload.email());
+
+			return ResponseEntity.ok(participantResponse);
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	@GetMapping("{id}/participants")
+	public ResponseEntity<List<ParticipantData>> getParticipantsByTrip(@PathVariable UUID id) {
+		Optional<Trip> trip = this.tripRepository.findById(id);
+
+		if (trip.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		List<ParticipantData> participantList = this.participantService.getAllParticipantsByTrip(id);
+
+		return ResponseEntity.ok(participantList);
 	}
 
 }
