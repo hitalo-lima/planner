@@ -1,6 +1,7 @@
 package com.planner.activity;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import com.planner.trip.Trip;
@@ -25,6 +26,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Activity {
+
+    public Activity(String title, String occursAt, Trip trip) {
+        this.title = title;
+        this.occursAt = LocalDate.parse(occursAt, DateTimeFormatter.ISO_DATE_TIME);
+        this.trip = trip;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
