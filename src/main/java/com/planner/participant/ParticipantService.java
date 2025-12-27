@@ -21,9 +21,6 @@ public class ParticipantService {
                 .toList();
 
         this.participantRepository.saveAll(participants);
-
-        System.out.println(participants.get(0).getId());
-
     }
 
     public ParticipantCreateResponse registerParticipantToTrip(String email, Trip trip) {
