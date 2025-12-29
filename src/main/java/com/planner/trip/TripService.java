@@ -39,7 +39,7 @@ public class TripService {
 
     public Trip findTripById(UUID id) {
         return this.tripRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Viagem não encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
     }
 
     public TripCreateResponse createTrip(TripRequestPayload payload) {
@@ -49,7 +49,7 @@ public class TripService {
         final LocalDateTime endDateFormatted = DateUtils.parseISODateTime(payload.endsAt());
 
         if (endDateFormatted.isBefore(startDateFormatted)) {
-            throw new IllegalArgumentException("A data de término deve ser posterior à data de início.");
+            throw new IllegalArgumentException("End date must be after start date.");
         }
 
         this.tripRepository.save(newTrip);
@@ -63,7 +63,7 @@ public class TripService {
         Optional<Trip> trip = this.tripRepository.findById(id);
 
         if (!trip.isPresent())
-            throw new ResourceNotFoundException("Viagem não encontrada.");
+            throw new ResourceNotFoundException("Trip not found.");
 
         Trip rawTrip = trip.get();
 
@@ -80,7 +80,7 @@ public class TripService {
         Optional<Trip> trip = this.tripRepository.findById(id);
 
         if (!trip.isPresent())
-            throw new ResourceNotFoundException("Viagem não encontrada.");
+            throw new ResourceNotFoundException("Trip not found.");
 
         Trip rawTrip = trip.get();
 
@@ -98,7 +98,7 @@ public class TripService {
         Optional<Trip> trip = this.tripRepository.findById(tripId);
 
         if (!trip.isPresent())
-            throw new ResourceNotFoundException("Viagem não encontrada.");
+            throw new ResourceNotFoundException("Trip not found.");
 
         Trip rawTrip = trip.get();
 
@@ -111,7 +111,7 @@ public class TripService {
         Optional<Trip> trip = this.tripRepository.findById(tripId);
 
         if (!trip.isPresent())
-            throw new ResourceNotFoundException("Viagem não encontrada.");
+            throw new ResourceNotFoundException("Trip not found.");
 
         return this.activityService.getAllActivitiesByTrip(tripId);
     }
@@ -120,7 +120,7 @@ public class TripService {
         Optional<Trip> trip = this.tripRepository.findById(tripId);
 
         if (!trip.isPresent())
-            throw new ResourceNotFoundException("Viagem não encontrada.");
+            throw new ResourceNotFoundException("Trip not found.");
 
         Trip rawTrip = trip.get();
 
@@ -137,7 +137,7 @@ public class TripService {
         Optional<Trip> trip = this.tripRepository.findById(tripId);
 
         if (!trip.isPresent())
-            throw new ResourceNotFoundException("Viagem não encontrada.");
+            throw new ResourceNotFoundException("Trip not found.");
 
         return this.participantService.getAllParticipantsByTrip(tripId);
     }
@@ -146,7 +146,7 @@ public class TripService {
         Optional<Trip> trip = this.tripRepository.findById(tripId);
 
         if (!trip.isPresent())
-            throw new ResourceNotFoundException("Viagem não encontrada.");
+            throw new ResourceNotFoundException("Trip not found.");
 
         Trip rawTrip = trip.get();
 
@@ -160,7 +160,7 @@ public class TripService {
         Optional<Trip> trip = this.tripRepository.findById(tripId);
 
         if (!trip.isPresent())
-            throw new ResourceNotFoundException("Viagem não encontrada.");
+            throw new ResourceNotFoundException("Trip not found.");
 
         return this.linkService.getAllLinksByTrip(tripId);
     }

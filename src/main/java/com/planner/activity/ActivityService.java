@@ -27,7 +27,7 @@ public class ActivityService {
         String formattedEndsAt = DateUtils.formatDateTime(trip.getEndsAt());
 
         if (!DateUtils.isDateBetween(activityDate, trip.getStartsAt(), trip.getEndsAt())) {
-            throw new IllegalArgumentException("A atividade deve ocorrer dentro do período da viagem: "
+            throw new IllegalArgumentException("The activity must occur within the trip period: "
                     + formattedStartsAt + " - " + formattedEndsAt);
         }
 
