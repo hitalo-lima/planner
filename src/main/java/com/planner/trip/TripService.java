@@ -1,6 +1,5 @@
 package com.planner.trip;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +19,6 @@ import com.planner.participant.ParticipantCreateResponse;
 import com.planner.participant.ParticipantData;
 import com.planner.participant.ParticipantRequestPayload;
 import com.planner.participant.ParticipantService;
-import com.planner.utils.DateUtils;
 
 @Service
 public class TripService {
@@ -45,10 +43,7 @@ public class TripService {
     public TripCreateResponse createTrip(TripRequestPayload payload) {
         Trip newTrip = new Trip(payload);
 
-        final LocalDateTime startDateFormatted = DateUtils.parseISODateTime(payload.startsAt());
-        final LocalDateTime endDateFormatted = DateUtils.parseISODateTime(payload.endsAt());
-
-        if (endDateFormatted.isBefore(startDateFormatted)) {
+        if (payload.endsAt().isBefore(payload.startsAt())) {
             throw new IllegalArgumentException("End date must be after start date.");
         }
 
@@ -67,8 +62,8 @@ public class TripService {
 
         Trip rawTrip = trip.get();
 
-        rawTrip.setStartsAt(DateUtils.parseISODateTime(payload.startsAt()));
-        rawTrip.setEndsAt(DateUtils.parseISODateTime(payload.endsAt()));
+        rawTrip.setStartsAt(payload.startsAt());
+        rawTrip.setEndsAt(payload.endsAt());
         rawTrip.setDestination(payload.destination());
 
         this.tripRepository.save(rawTrip);
@@ -107,7 +102,7 @@ public class TripService {
         return activityResponse;
     }
 
-    public List<ActivityData> getActitiviesByTrip(UUID tripId) {
+    public List<ActivityData> getActivitiesByTrip(UUID tripId) {
         Optional<Trip> trip = this.tripRepository.findById(tripId);
 
         if (!trip.isPresent())

@@ -1,5 +1,7 @@
 package com.planner.activity;
 
-public record ActivityRequestPayload(String title, String occursAt) {
+import java.time.LocalDateTime;
+
+public record ActivityRequestPayload(String title, LocalDateTime occursAt) {
 
 }

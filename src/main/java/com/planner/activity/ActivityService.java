@@ -1,6 +1,5 @@
 package com.planner.activity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,12 +20,10 @@ public class ActivityService {
     public ActivityResponse registerActivity(ActivityRequestPayload payload, Trip trip) {
         Activity newActivity = new Activity(payload.title(), payload.occursAt(), trip);
 
-        LocalDateTime activityDate = DateUtils.parseISODateTime(payload.occursAt());
-
         String formattedStartsAt = DateUtils.formatDateTime(trip.getStartsAt());
         String formattedEndsAt = DateUtils.formatDateTime(trip.getEndsAt());
 
-        if (!DateUtils.isDateBetween(activityDate, trip.getStartsAt(), trip.getEndsAt())) {
+        if (!DateUtils.isDateBetween(payload.occursAt(), trip.getStartsAt(), trip.getEndsAt())) {
             throw new IllegalArgumentException("The activity must occur within the trip period: "
                     + formattedStartsAt + " - " + formattedEndsAt);
         }
@@ -41,7 +38,7 @@ public class ActivityService {
                 .map(activity -> new ActivityData(
                         activity.getId(),
                         activity.getTitle(),
-                        activity.getOccursAt().toString()))
+                        activity.getOccursAt()))
                 .toList();
     }
 }

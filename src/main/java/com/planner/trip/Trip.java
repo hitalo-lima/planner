@@ -25,8 +25,8 @@ public class Trip {
 
     public Trip(TripRequestPayload payload) {
         this.destination = payload.destination();
-        this.startsAt = LocalDateTime.parse(payload.startsAt(), DateTimeFormatter.ISO_DATE_TIME);
-        this.endsAt = LocalDateTime.parse(payload.endsAt(), DateTimeFormatter.ISO_DATE_TIME);
+        this.startsAt = payload.startsAt();
+        this.endsAt = payload.endsAt();
         this.isConfirmed = false;
         this.ownerName = payload.ownerName();
         this.ownerEmail = payload.ownerEmail();
