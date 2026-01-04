@@ -3,6 +3,9 @@ package com.planner.participant;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/participants")
+@Tag(name = "Participant management", description = "APIs for managing participants, including confirmation and updates.")
 public class ParticipantController {
 
     public ParticipantController(ParticipantRepository participantRepository) {
@@ -23,7 +27,7 @@ public class ParticipantController {
 
     @PutMapping("/{id}/confirm")
     public ResponseEntity<Participant> confirmParticipant(@PathVariable UUID id,
-            @RequestBody ParticipantRequestPayload payload) {
+            @Valid @RequestBody ParticipantRequestPayload payload) {
         Optional<Participant> participant = this.participantRepository.findById(id);
 
         if (participant.isPresent()) {
